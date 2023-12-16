@@ -21,6 +21,7 @@ export const FirstMessage = styled.Text`
 export  const Timer = styled.Text`
     color: #f2f2f2;
     font-size: 24px;
+    margin-bottom: 12px;
 `;
 
 export const Container = styled.View`
@@ -31,6 +32,7 @@ export const Container = styled.View`
     height: 17%;
     justify-content: space-around;
     flex-wrap: wrap;
+    margin-top: 10px;
 `;
 
 export const Img = styled.Image`
@@ -92,4 +94,18 @@ export const Destaque = styled.Text`
     font-weight: 900;
     letter-spacing: 2px;
     font-size: 14px;
+`;
+
+export const MessageError = styled.Text`
+    min-height: 70%;
+    margin-top: 50px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    font-weight: 300;
+    border-radius: 8px;
+    line-height: 26px;
+    font-size: 18px;
+    max-width: 90%;
+    color: #000000;
+    text-align: center;
 `;

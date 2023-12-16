@@ -16,15 +16,15 @@ import {
   Infos,
   Row,
   Texto,
-  Destaque
+  Destaque,
+  MessageError
 } from './style'
 
 // IMPORTAÇÃO DA BIBLIOTECA QUE CONSOME AS REQUISIÇÕES
 import axios from 'axios'
 
 // DECLARAÇÃO DA CHAVE DA API E DO HOST
-const API_KEY = '3584d3b889mshf5d684ed9dfce94p121596jsnfc8b881ca9c2'
-// const API_KEY = 'a9cd1dfa31msh7921854d3f733f0p101924jsnb5a8bacbc0e5'
+const API_KEY = 'a9cd1dfa31msh7921854d3f733f0p101924jsnb5a8bacbc0e5'
 
 export default function App(){
     
@@ -45,7 +45,7 @@ export default function App(){
         units: 'metric'
       },
       headers: {
-        //CHAVES DA API EMAIL 2
+        //CHAMADA DA VARIAVEL QUE TEM A CHAVE DA API
         'X-RapidAPI-Key': API_KEY,
         'X-RapidAPI-Host': 'tomorrow-io1.p.rapidapi.com'
       }
@@ -60,12 +60,12 @@ export default function App(){
   }
   
   //FUNÇÃO RESPONSÁVEL POR MUDAR A COR DO APLICATIVO DEPENDENDO DO HORÁRIO DO DIA
-  function setBgColor(hour:number){
-    if(hour >= 6 && hour < 12){
+  function setBgColor(hour:number, minutes:number){
+    if(hour >= 6 && hour < 13){
       setBg('#e2d386')
       setMsg('Bom Dia')
     }
-    else if(hour >= 12 && hour < 20){
+    else if(hour >= 13 && hour < 20){
       setBg('#1f9fe9')
       setMsg('Boa Tarde')
     }
@@ -80,10 +80,9 @@ export default function App(){
     const hour = new Date().getHours()
     const minutes = new Date().getMinutes()
     const seconds = new Date().getSeconds()
-    setActualTime(
-      //COLOCA OS HORÁRIOS EM PADRÃO DE 2 NÚMEROS
-      `${hour <= 9 ? `0${hour}` : hour}:${minutes <=9 ? `0${minutes}` : minutes}:${seconds <=9 ? `0${seconds}` : seconds}`)
-    setBgColor(hour) 
+    //COLOCA OS HORÁRIOS EM PADRÃO DE 2 NÚMEROS
+    setActualTime(`${hour <= 9 ? `0${hour}` : hour}:${minutes <=9 ? `0${minutes}` : minutes}:${seconds <=9 ? `0${seconds}` : seconds}`)
+    setBgColor(hour, minutes) 
   }
 
   //FUNÇÃO CHAMADA A CADA 1 SEGUNDO PARA PEGAR O HORÁRIO ATUAL (necessita da chamada da função anterior)
@@ -91,7 +90,7 @@ export default function App(){
     refreshTime()
   }, 1000);
   
-  // HOOK DO REACT CHAMADO QUANDO OS DA DOS DA APLICAÇÃO INICIAL SÃO CARREGADOS (dados iniciais, como o layout, conteudos consumidos ou chamados com o aplicativo funcional não são carregados)
+  // HOOK DO REACT CHAMADO QUANDO OS DA DOS DA APLICAÇÃO INICIAL SÃO CARREGADOS (dados iniciais como o layout, conteudos consumidos ou chamados com o aplicativo funcional não são carregados)
   useEffect(() => {
     getData(location);
   }, []);
@@ -104,6 +103,7 @@ export default function App(){
           
             {api ? (
               <>
+              <Texto>Dados atuais</Texto>
               <Container>
                 {bg == '#e2d386' && (
                   <Img source={require('./assets/icons/001.png')} />
@@ -131,35 +131,10 @@ export default function App(){
               </Infos>
               </>
             ) : (
-              <>
-                <Container>
-                  {bg == '#e2d386' && (
-                    <Img source={require('./assets/icons/001.png')} />
-                  )}
-                  {bg == '#1f9fe9' && (
-                    <Img source={require('./assets/icons/001.png')} />
-                  )}
-                  {bg == '#526cbb' && (
-                    <Img source={require('./assets/icons/005.png')} />
-                  )}
-                  <Temperature>34° C</Temperature>
-                </Container>
-
-                <TitleInfo>Outras informações</TitleInfo>
-                <Infos>
-                  <Row>
-                    <Texto>Umidade do ar:</Texto><Destaque>32%</Destaque>
-                  </Row>
-                  <Row>
-                    <Texto>Velocidade do vento: </Texto><Destaque>23 Km/h</Destaque>
-                  </Row>
-                  <Row>
-                    <Texto>Chance de chover: </Texto><Destaque>45%</Destaque>
-                  </Row>
-                </Infos>
-              </>
+              //  VERIFICA SE O A REQUISIÇÃO DOS DADOS FALHOU E RETORNA UMA MENSAGEM
+              <MessageError>Infelizmente os dados não foram carregados, verifique sua conexão com a internet, ou tente novamente mais tarde</MessageError>
             )}
-            <StatusBar style="auto" />
+            <StatusBar style="auto" backgroundColor={bg}/>
         </Screen>
     )
 }
